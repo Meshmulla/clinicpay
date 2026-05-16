@@ -1,153 +1,147 @@
 # ClinicPay
 
-> A mobile-first healthcare micro-payment system built on Stellar.
+**Healthcare micro-payments for underserved communities — powered by Stellar, Soroban, and USDC.**
 
-ClinicPay enables patients in underserved communities to pay for medical treatment in small daily or weekly installments using stablecoins (USDC on Stellar), while guaranteeing clinics receive full payment through Soroban-powered smart contract escrows.
+> A patient in Lagos shouldn't have to choose between eating and getting a lab test.  
+> ClinicPay lets them pay for treatment the same way they save — small amounts, every day.
 
----
-
-## Table of Contents
-
-- [Problem Statement](#problem-statement)
-- [Solution](#solution)
-- [Target Users](#target-users)
-- [Features](#features)
-- [User Flows](#user-flows)
-- [Tech Stack](#tech-stack)
-- [Architecture Overview](#architecture-overview)
-- [Smart Contracts](#smart-contracts)
-- [Getting Started](#getting-started)
-- [Project Structure](#project-structure)
-- [Why Africa](#why-africa)
-- [Contributing](#contributing)
-- [License](#license)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Built on Stellar](https://img.shields.io/badge/Built%20on-Stellar-blueviolet)](https://stellar.org)
+[![Smart Contracts: Soroban](https://img.shields.io/badge/Contracts-Soroban-blue)](https://soroban.stellar.org)
+[![Stablecoin: USDC](https://img.shields.io/badge/Stablecoin-USDC-2775CA)](https://www.circle.com/usdc)
+[![Open for Contributions](https://img.shields.io/badge/Contributions-Welcome-brightgreen)](#contributing)
 
 ---
 
-## Problem Statement
+## The Problem
 
-Across many African countries, patients delay or avoid medical treatment because they cannot afford large upfront costs. Even basic healthcare — lab tests, drugs, scans — creates significant financial pressure on low-income individuals and families.
+Across much of Sub-Saharan Africa, the barrier to healthcare is not the absence of clinics — it's **the demand for full payment upfront.**
 
-Clinics face their own challenges:
+Patients skip critical diagnostics, discontinue treatment halfway, or take informal loans at predatory rates — all because they cannot pay a lump sum on the day of care. Meanwhile, clinics that extend informal credit face defaults, disputes, and cash flow problems with no recourse.
 
-- Patients default on informal payment agreements
-- Repayment schedules are unstructured and unenforceable
-- Cash handling is inefficient and prone to disputes
+The result: **preventable health crises** on one side, **unsustainable clinics** on the other.
 
-There is currently no transparent, automated, or structured mechanism that allows patients to pay in small amounts while guaranteeing clinics will be fully paid.
+There is currently no transparent, structured, or automated mechanism that lets patients pay in small installments while **guaranteeing clinics receive the full amount.**
 
 ---
 
-## Solution
+## The Solution
 
-ClinicPay introduces a **pay-as-you-heal** micro-payment model:
+ClinicPay introduces a **pay-as-you-heal** model using blockchain-enforced escrow:
 
-- Patients pay in small daily or weekly USDC installments
-- Funds are held in a **Soroban smart contract escrow** — not accessible to either party until the target is met
-- Once the full amount is deposited, the contract automatically releases funds to the clinic
-- NGOs, employers, and donors can optionally top up patient plans through an on-chain subsidy layer
+- Patients deposit small daily or weekly **USDC installments** into a smart contract
+- Funds are **locked in escrow** — inaccessible to either party until the target is reached
+- Once the treatment cost is fully covered, the contract **automatically releases funds** to the clinic
+- NGOs, employers, and donors can **top up patient plans** via an on-chain subsidy layer
+
+This makes informal "buy now, pay later" agreements in healthcare **trustless, transparent, and enforceable** — without banks, intermediaries, or legal overhead.
 
 ---
 
-## Target Users
+## Why It Works in Africa
 
-### Primary Users
+ClinicPay is not a generic fintech product adapted for Africa. It is **purpose-built** for the context:
 
-**Patients**
-- Individuals who cannot afford upfront medical costs
-- Low-income patients needing lab tests, antenatal care, or medication
-- Families with recurring health expenses
-- Chronic disease patients requiring long-term treatment
+| Design Choice | Rationale |
+|---|---|
+| USDC stablecoin | Shields patients and clinics from local currency volatility |
+| Stellar network | Near-zero fees (~$0.00001/tx), 5-second finality — viable for micro-payments |
+| Soroban smart contracts | Trustless escrow with no intermediaries |
+| Mobile-first UX | Built for low-end Android phones and limited data connections |
+| Daily installment model | Mirrors *ajo/esusu* — the familiar rotating savings culture across West Africa |
+| On-chain subsidy layer | Designed for NGO and employer co-payment programs common in the region |
 
-**Clinics & Hospitals**
-- Private clinics
-- Diagnostic centers
-- Pharmacies offering expensive medication
+---
 
-### Secondary Users
+## How It Works
 
-**NGOs & Donors**
-- Organizations supporting maternal health
-- Programs subsidizing HIV, TB, and malaria treatments
-- Emergency coverage providers
+### For Patients
 
-**Employers**
-- Companies offering co-pay support for staff
-- Organizations subsidizing workplace medical checks
+```
+1.  Scan a clinic's QR code or search for the clinic in-app
+2.  Enter the treatment type and total cost
+3.  ClinicPay calculates a recommended daily or weekly payment schedule
+4.  Make the first micro-payment — the escrow contract is created
+5.  Continue paying in small installments over days or weeks
+6.  When the full amount is deposited, the clinic is paid automatically
+```
+
+### For Clinics
+
+```
+1.  Dashboard shows all active patient escrows and funding progress
+2.  Receive instant USDC settlement the moment a plan is fully funded
+3.  Optionally release partial funds for multi-stage treatments (e.g., antenatal care)
+4.  Track revenue, completed treatments, and subsidy impact in real time
+```
+
+### For NGOs and Employers (Optional)
+
+```
+1.  Select a treatment category to sponsor (e.g., maternal health, HIV medication)
+2.  Set a matching rate — e.g., $0.50 for every $1 a patient deposits
+3.  Contributions are tracked separately on-chain
+4.  Clinic receives the full combined amount upon plan completion
+```
 
 ---
 
 ## Features
 
-### Patient Features
+### Patient-Facing
 
-| Feature | Description |
-|---|---|
-| Treatment Plan Creation | Select a clinic, enter treatment cost, choose a repayment schedule, and lock funds into escrow |
-| Micro-Payments | Make small daily/weekly USDC deposits with a live progress bar |
-| Auto-Completion | Contract auto-releases funds to the clinic once the full amount is paid |
-| Subsidy Layer | NGOs or employers can top up a patient's plan transparently on-chain |
-| Emergency Buffer | A loan-like advance backed by repayment history, approved by the clinic for early treatment |
+- **Treatment Plan Creation** — Select a clinic, enter cost, pick a repayment schedule, lock into escrow
+- **Live Payment Progress** — Real-time progress bar with estimated completion date
+- **Micro-Deposits** — Make deposits as small as the network allows, any time
+- **Auto-Completion** — Contract releases funds the moment the target is met — no manual action required
+- **Subsidy Visibility** — See in real time when an NGO or employer is co-contributing to your plan
+- **Emergency Advance** — Loan-like early treatment access backed by payment history, approved by the clinic
 
-### Clinic Features
+### Clinic-Facing
 
-| Feature | Description |
-|---|---|
-| Treatment Plan Dashboard | View all pending patient escrows, verify patients, and confirm service delivery |
-| Instant Settlement | Receive USDC instantly once a treatment plan is fully funded |
-| Partial Release Mode | Release funds in milestones for multi-stage treatments (e.g., pregnancy care) |
-| Reports & Analytics | Track completed treatments, revenue insights, and subsidy impact |
+- **Escrow Dashboard** — View all pending patient plans, with real-time funding status
+- **Instant Settlement** — USDC lands in the clinic wallet automatically when a plan completes
+- **Partial Release Mode** — Unlock funds in milestone stages for phased treatments
+- **Analytics** — Revenue insights, treatment completion rates, subsidy breakdown
 
-### Smart Contract Features (Soroban)
+### Smart Contract Layer (Soroban)
 
-| Feature | Description |
-|---|---|
-| Escrow Contract | Holds patient deposits and releases to clinic when the target amount is reached |
-| Auto-Reconciliation | Prevents disputes with a publicly verifiable on-chain contract state |
-| Partial Funding | Allows donors to fund a percentage of a patient's treatment plan |
-| Claim Fail-Safe | If a patient cancels, unspent funds are returned — clinic must approve cancellation |
+- **Main Escrow Contract** — Accepts patient deposits, holds funds, auto-releases on completion
+- **Matching/Top-up Contract** — Accepts sponsor contributions, tracks shares separately on-chain
+- **Milestone Release Contract** *(in development)* — Stages fund release based on confirmed treatment milestones
+- **Cancellation Fail-Safe** — Returns unspent funds to the patient if a plan is cancelled, with clinic approval
 
 ---
 
-## User Flows
-
-### Flow 1 — Patient Creates a Treatment Plan
+## Architecture
 
 ```
-1. Patient scans clinic QR code or selects clinic from list
-2. Inputs treatment type and total cost
-3. System calculates recommended daily/weekly payment amount
-4. Patient deposits first micro-payment into escrow
-5. Contract is created and becomes visible to the clinic
-```
-
-### Flow 2 — Patient Makes Micro-Payments
-
-```
-1. Patient opens the app
-2. Selects "Continue Payments"
-3. Makes a small USDC deposit
-4. Progress bar updates in real time
-5. App shows estimated time to full payment completion
-```
-
-### Flow 3 — Clinic Redeems a Completed Plan
-
-```
-1. Escrow reaches the total target amount
-2. Contract automatically releases funds
-3. Clinic wallet receives instant USDC settlement
-4. Clinic marks the treatment as completed
-```
-
-### Flow 4 — Subsidy / Matching (Optional)
-
-```
-1. NGO or employer selects a treatment category (e.g., antenatal care)
-2. Patient joins a matched plan
-3. For every $1 the patient deposits, the sponsor contributes $0.10–$1.00
-4. Contract tracks each contributor's deposits separately
-5. Clinic receives the full combined amount upon completion
+┌──────────────────────────────────────────────────────────────┐
+│                     Mobile Frontend                          │
+│              React / Next.js  ·  Flutter                     │
+│                                                              │
+│   Patient UI  ·  Clinic Dashboard  ·  QR Scanner            │
+│   Payment Progress  ·  Subsidy Tracker  ·  Analytics         │
+└─────────────────────────┬────────────────────────────────────┘
+                          │  REST / WebSocket
+                          ▼
+┌──────────────────────────────────────────────────────────────┐
+│                       Backend API                            │
+│                      Node.js / Express                       │
+│                                                              │
+│   Account Management  ·  Treatment Plan Metadata            │
+│   Notification Engine  ·  Encrypted Health Record Refs      │
+│   Analytics Endpoints  ·  Subsidy Matching Logic            │
+└─────────────────────────┬────────────────────────────────────┘
+                          │  Stellar SDK / Soroban RPC
+                          ▼
+┌──────────────────────────────────────────────────────────────┐
+│               Stellar Blockchain (Soroban)                   │
+│                                                              │
+│   [Escrow Contract]   — core payment & release logic        │
+│   [Matching Contract] — NGO/employer subsidy tracking       │
+│   [Milestone Contract]— staged release (in development)     │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -156,67 +150,66 @@ ClinicPay introduces a **pay-as-you-heal** micro-payment model:
 
 | Layer | Technology |
 |---|---|
-| Frontend | React / Next.js or Flutter (mobile-first) |
-| Wallet Integration | USDC on Stellar |
-| QR Scanning | Clinic onboarding via QR code |
-| Backend | Node.js / REST API |
-| Smart Contracts | Soroban (Stellar) |
+| Frontend | React / Next.js (web) · Flutter (mobile) |
+| Backend | Node.js · Express · REST API |
+| Blockchain | Stellar · Soroban smart contracts |
 | Stablecoin | USDC on Stellar |
-
----
-
-## Architecture Overview
-
-```
-┌─────────────────────────────────────────────────────┐
-│                   Mobile Frontend                   │
-│         (React/Next.js or Flutter)                  │
-│  - Patient UI     - Clinic Dashboard                │
-│  - QR Scanner     - Progress Tracker                │
-└────────────────────────┬────────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────────┐
-│                     Backend API                     │
-│  - Account Management                               │
-│  - Treatment Plan Metadata                          │
-│  - Notification Engine                              │
-│  - Encrypted Health Record References               │
-│  - Analytics Endpoints                              │
-└────────────────────────┬────────────────────────────┘
-                         │
-                         ▼
-┌─────────────────────────────────────────────────────┐
-│              Stellar Blockchain (Soroban)            │
-│  - Main Escrow Contract                             │
-│  - Matching / Top-up Contract (optional)            │
-│  - Milestone Release Contract (future)              │
-└─────────────────────────────────────────────────────┘
-```
+| Wallet Integration | Freighter · Lobstr · Custom mobile wallet |
+| QR Onboarding | Clinic onboarding via scannable QR codes |
+| Notifications | Push + SMS for payment reminders |
 
 ---
 
 ## Smart Contracts
 
-ClinicPay uses **Soroban** — Stellar's smart contract platform — to power its escrow and payment logic.
+All contracts are written in **Rust** and deployed on **Soroban**, Stellar's smart contract platform.
 
-### Main Escrow Contract
+### `escrow/` — Main Escrow Contract
 
-- Accepts USDC deposits from patients
-- Holds funds until the target amount is reached
-- Automatically releases funds to the clinic wallet upon completion
-- Returns unspent funds to the patient if the plan is cancelled (with clinic approval)
+The core of ClinicPay. Handles patient deposits, holds USDC securely, and releases to the clinic wallet when the target amount is reached.
 
-### Matching / Top-up Contract *(optional)*
+**Key functions:**
+- `create_plan(patient, clinic, target_amount, schedule)` — initialises a treatment plan
+- `deposit(plan_id, amount)` — accepts a patient micro-payment
+- `release(plan_id)` — auto-triggers when balance meets the target
+- `cancel(plan_id)` — returns unspent funds to patient (requires clinic approval)
 
-- Accepts contributions from NGOs or employers
-- Tracks each contributor's share separately on-chain
-- Combines patient and sponsor deposits before releasing to the clinic
+### `matching/` — Subsidy / Top-up Contract *(optional)*
 
-### Milestone Release Contract *(future)*
+Enables NGOs and employers to co-fund patient plans on-chain with full contribution transparency.
 
-- Releases funds in stages based on confirmed treatment milestones
-- Designed for multi-stage care such as antenatal programs or phased surgeries
+**Key functions:**
+- `register_sponsor(sponsor, category, match_rate)` — sets up a sponsor with a matching rule
+- `top_up(plan_id, amount)` — sponsor contributes to a patient plan
+- `get_contributions(plan_id)` — returns a breakdown of each contributor's share
+
+### `milestone/` — Milestone Release Contract *(in development)*
+
+Designed for multi-stage care — such as antenatal programs or phased surgeries — where funds should be unlocked incrementally as the clinic confirms each treatment stage.
+
+---
+
+## Project Structure
+
+```
+clinicpay/
+├── frontend/
+│   ├── components/         # Reusable UI components
+│   ├── pages/              # App screens and routes
+│   └── utils/              # Stellar wallet helpers, QR scanner, formatters
+├── backend/
+│   ├── routes/             # REST API endpoints
+│   ├── services/           # Business logic (plans, subsidies, notifications)
+│   └── models/             # Data models
+├── contracts/
+│   ├── escrow/             # Main escrow contract (Rust / Soroban)
+│   ├── matching/           # Subsidy/top-up contract
+│   └── milestone/          # Milestone release contract (in development)
+├── docs/                   # Additional documentation and diagrams
+├── .env.example
+├── package.json
+└── README.md
+```
 
 ---
 
@@ -225,8 +218,9 @@ ClinicPay uses **Soroban** — Stellar's smart contract platform — to power it
 ### Prerequisites
 
 - Node.js >= 18
-- A Stellar wallet with USDC (testnet or mainnet)
-- Soroban CLI (for contract deployment)
+- Rust toolchain with `wasm32-unknown-unknown` target
+- [Soroban CLI](https://soroban.stellar.org/docs/getting-started/setup)
+- A Stellar wallet with testnet USDC (use [Stellar Laboratory](https://laboratory.stellar.org) to fund)
 
 ### Installation
 
@@ -235,10 +229,10 @@ ClinicPay uses **Soroban** — Stellar's smart contract platform — to power it
 git clone https://github.com/your-org/clinicpay.git
 cd clinicpay
 
-# Install dependencies
+# Install Node dependencies
 npm install
 
-# Copy environment variables
+# Set up environment variables
 cp .env.example .env
 ```
 
@@ -255,77 +249,88 @@ USDC_ISSUER=<usdc_issuer_address>
 ### Running the App
 
 ```bash
-# Development
+# Start development server
 npm run dev
 
 # Production build
-npm run build
-npm start
+npm run build && npm start
 ```
 
 ### Deploying Smart Contracts
 
 ```bash
-# Build the contract
+# Build the Soroban contract
 soroban contract build
 
-# Deploy to testnet
+# Deploy to Stellar testnet
 soroban contract deploy \
   --wasm target/wasm32-unknown-unknown/release/clinicpay_escrow.wasm \
   --network testnet
+
+# (Optional) Run contract tests
+cargo test
 ```
-
----
-
-## Project Structure
-
-```
-clinicpay/
-├── frontend/               # Mobile-first React/Next.js or Flutter app
-│   ├── components/         # Reusable UI components
-│   ├── pages/              # App screens and routes
-│   └── utils/              # Stellar wallet helpers, QR scanner
-├── backend/                # API server
-│   ├── routes/             # REST API endpoints
-│   ├── services/           # Business logic
-│   └── models/             # Data models
-├── contracts/              # Soroban smart contracts
-│   ├── escrow/             # Main escrow contract
-│   ├── matching/           # Subsidy/top-up contract
-│   └── milestone/          # Milestone release contract (future)
-├── .env.example
-├── package.json
-└── README.md
-```
-
----
-
-## Why Africa
-
-ClinicPay is purpose-built for African healthcare contexts:
-
-- **Culturally aligned** — mirrors familiar daily savings behavior (like ajo/esusu)
-- **Guaranteed clinic revenue** — escrow removes the risk of patient default
-- **Mobile-first UX** — designed for low-end smartphones and limited data
-- **Stablecoin-based** — USDC provides predictable value, shielding users from local currency volatility
-- **Transparent and trustless** — all payment states are publicly verifiable on-chain
 
 ---
 
 ## Contributing
 
-Contributions are welcome. Please open an issue first to discuss what you would like to change.
+ClinicPay is an open-source project and contributions are actively welcomed — whether you're fixing a bug, improving the UI, writing tests, or working on smart contract logic.
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/your-feature`)
-3. Commit your changes (`git commit -m 'add your feature'`)
-4. Push to the branch (`git push origin feature/your-feature`)
-5. Open a Pull Request
+### Good First Issues
+
+If you're new to the project, look for issues tagged:
+
+- `good first issue` — small, self-contained tasks
+- `help wanted` — areas where the maintainers would love support
+- `contracts` — Soroban/Rust work on the escrow and matching logic
+- `frontend` — React/Flutter UI improvements
+- `docs` — documentation, diagrams, translations
+
+### How to Contribute
+
+```bash
+# 1. Fork the repository on GitHub
+
+# 2. Create a feature branch
+git checkout -b feature/your-feature-name
+
+# 3. Make your changes and commit
+git commit -m "feat: describe what you built"
+
+# 4. Push your branch
+git push origin feature/your-feature-name
+
+# 5. Open a Pull Request on GitHub
+```
+
+Please open an issue first for significant changes so we can align before you build.
+
+### Areas Most Needing Contributions
+
+| Area | What's Needed |
+|---|---|
+| Smart Contracts | Milestone release contract implementation, contract audit, test coverage |
+| Mobile Frontend | Flutter app development, offline-first payment queue |
+| Backend | Notification engine (SMS/push), analytics endpoints |
+| Wallet Integration | Freighter and Lobstr wallet connection improvements |
+| Documentation | Setup guides, architecture diagrams, API reference |
+| Testing | Unit and integration tests across all layers |
 
 ---
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE). You are free to use, modify, and distribute it — including for commercial purposes — with attribution.
 
 ---
+
+## Acknowledgements
+
+Built on [Stellar](https://stellar.org) and [Soroban](https://soroban.stellar.org).  
+Stablecoin infrastructure powered by [USDC](https://www.circle.com/usdc) from Circle.  
+Inspired by the *ajo* and *esusu* savings traditions of West Africa.
+
+---
+
+*ClinicPay is open source and accepting contributions. If you believe healthcare access is a right, not a privilege — help us build it.*

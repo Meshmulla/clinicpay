@@ -1,6 +1,6 @@
 # ClinicPay
 
-**Healthcare micro-payments for underserved communities — powered by Stellar, Soroban, and USDC.**
+**Healthcare micro-payments for underserved communities — powered by Stellar**
 
 > A patient in Lagos shouldn't have to choose between eating and getting a lab test.  
 > ClinicPay lets them pay for treatment the same way they save — small amounts, every day.
